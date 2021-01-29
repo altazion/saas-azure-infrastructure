@@ -1,0 +1,1 @@
+C:\git-dev\saas-azure-infrastructure\AltazionAzure\Altazion\obj\Debug\Altazion.deployproj.CoreCompileInputs.cache

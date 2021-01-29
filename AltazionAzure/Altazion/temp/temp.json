@@ -1,0 +1,740 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {},
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e",
+      "location": "West Europe",
+      "kind": "app",
+      "properties": {
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "app.simplement-e.com",
+            "sslState": "SniEnabled",
+            "thumbprint": "624425F1D922CD60F03FC70EEB920F8DEBAE3CFB",
+            "hostType": "Standard"
+          },
+          {
+            "name": "app-simplement-e.azurewebsites.net",
+            "sslState": "Disabled",
+            "hostType": "Standard"
+          },
+          {
+            "name": "cataleeze-ce.improveeze.com",
+            "sslState": "SniEnabled",
+            "thumbprint": "624425F1D922CD60F03FC70EEB920F8DEBAE3CFB",
+            "hostType": "Standard"
+          },
+          {
+            "name": "office.altazion.com",
+            "sslState": "SniEnabled",
+            "thumbprint": "624425F1D922CD60F03FC70EEB920F8DEBAE3CFB",
+            "hostType": "Standard"
+          },
+          {
+            "name": "services.simplement-e.com",
+            "sslState": "SniEnabled",
+            "thumbprint": "624425F1D922CD60F03FC70EEB920F8DEBAE3CFB",
+            "hostType": "Standard"
+          },
+          {
+            "name": "app-simplement-e.scm.azurewebsites.net",
+            "sslState": "Disabled",
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "/subscriptions/f033c3c5-09e9-49c8-97d6-f60a79b20c1d/resourceGroups/simplement-e-prod/providers/Microsoft.Web/serverfarms/simplement-e-prod",
+        "reserved": false,
+        "isXenon": false,
+        "hyperV": false,
+        "siteConfig": {},
+        "scmSiteAlsoStopped": false,
+        "clientAffinityEnabled": true,
+        "clientCertEnabled": false,
+        "hostNamesDisabled": false,
+        "containerSize": 0,
+        "dailyMemoryTimeQuota": 0,
+        "httpsOnly": true,
+        "redundancyMode": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/web",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "numberOfWorkers": 1,
+        "defaultDocuments": [
+          "Default.htm",
+          "Default.html",
+          "Default.asp",
+          "index.htm",
+          "index.html",
+          "iisstart.htm",
+          "default.aspx",
+          "index.php",
+          "hostingstart.html"
+        ],
+        "netFrameworkVersion": "v4.0",
+        "requestTracingEnabled": true,
+        "requestTracingExpirationTime": "9999-12-31T23:59:00Z",
+        "remoteDebuggingEnabled": false,
+        "httpLoggingEnabled": true,
+        "logsDirectorySizeLimit": 35,
+        "detailedErrorLoggingEnabled": true,
+        "publishingUsername": "$app-simplement-e",
+        "azureStorageAccounts": {},
+        "scmType": "None",
+        "use32BitWorkerProcess": true,
+        "webSocketsEnabled": true,
+        "alwaysOn": true,
+        "managedPipelineMode": "Integrated",
+        "virtualApplications": [
+          {
+            "virtualPath": "/",
+            "physicalPath": "site\\wwwroot",
+            "preloadEnabled": true
+          }
+        ],
+        "loadBalancing": "LeastRequests",
+        "experiments": {
+          "rampUpRules": []
+        },
+        "autoHealEnabled": false,
+        "push": {},
+        "localMySqlEnabled": false,
+        "ipSecurityRestrictions": [
+          {
+            "ipAddress": "Any",
+            "action": "Allow",
+            "priority": 1,
+            "name": "Allow all",
+            "description": "Allow all access"
+          }
+        ],
+        "scmIpSecurityRestrictions": [
+          {
+            "ipAddress": "Any",
+            "action": "Allow",
+            "priority": 1,
+            "name": "Allow all",
+            "description": "Allow all access"
+          }
+        ],
+        "scmIpSecurityRestrictionsUseMain": false,
+        "http20Enabled": true,
+        "minTlsVersion": "1.2",
+        "ftpsState": "AllAllowed",
+        "reservedInstanceCount": 0
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/3401602705511477",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"Deployment\",\"commitId\":\"db0d7d0f2051f7274dafdab54afb93c5dceb5909\",\"buildId\":\"22831\",\"releaseId\":\"340\",\"buildNumber\":\"22831\",\"releaseName\":\"v-20-22831-1014-1227\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"buildProjectUrl\":\"https://simplement-e.visualstudio.com/0470e85e-6a1b-499b-8376-398a0799d388\",\"repositoryUrl\":\"\",\"branch\":\"release\",\"teamProjectName\":\"Equihira\",\"slotName\":\"prerelease\"}",
+        "start_time": "2020-10-14T19:58:33.6095303Z",
+        "end_time": "2020-10-14T19:58:33.6095303Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/3401602706216943",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"SlotSwap\",\"commitId\":\"db0d7d0f2051f7274dafdab54afb93c5dceb5909\",\"buildId\":\"22831\",\"releaseId\":\"340\",\"buildNumber\":\"22831\",\"releaseName\":\"v-20-22831-1014-1227\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"sourceSlot\":\"prerelease\",\"targetSlot\":\"production\"}",
+        "start_time": "2020-10-14T20:10:27.6631649Z",
+        "end_time": "2020-10-14T20:10:27.6631649Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/3461603681430391",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "[[[simplement-e]\\Project Collection Service Accounts",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"Deployment\",\"commitId\":\"c1eb81ce22467bfb7576e84ba8b4d4aa44f63083\",\"buildId\":\"22919\",\"releaseId\":\"346\",\"buildNumber\":\"22919\",\"releaseName\":\"v-20-22919-1024-2100\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"buildProjectUrl\":\"https://simplement-e.visualstudio.com/0470e85e-6a1b-499b-8376-398a0799d388\",\"repositoryUrl\":\"\",\"branch\":\"release\",\"teamProjectName\":\"Equihira\",\"slotName\":\"prerelease\"}",
+        "start_time": "2020-10-26T03:03:54.0896189Z",
+        "end_time": "2020-10-26T03:03:54.0896189Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/3461604196490759",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"SlotSwap\",\"commitId\":\"c1eb81ce22467bfb7576e84ba8b4d4aa44f63083\",\"buildId\":\"22919\",\"releaseId\":\"346\",\"buildNumber\":\"22919\",\"releaseName\":\"v-20-22919-1024-2100\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"sourceSlot\":\"prerelease\",\"targetSlot\":\"production\"}",
+        "start_time": "2020-11-01T02:10:21.1663047Z",
+        "end_time": "2020-11-01T02:10:21.1663047Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/3521604891093905",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "[[[simplement-e]\\Project Collection Service Accounts",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"Deployment\",\"commitId\":\"6d2284e2ed547d8d6a2e1a88774f2b5fc82734fc\",\"buildId\":\"22988\",\"releaseId\":\"352\",\"buildNumber\":\"22988\",\"releaseName\":\"v-20-22988-1107-2100\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"buildProjectUrl\":\"https://simplement-e.visualstudio.com/0470e85e-6a1b-499b-8376-398a0799d388\",\"repositoryUrl\":\"\",\"branch\":\"release\",\"teamProjectName\":\"Equihira\",\"slotName\":\"prerelease\"}",
+        "start_time": "2020-11-09T03:04:56.2901526Z",
+        "end_time": "2020-11-09T03:04:56.2901526Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/3521605406404890",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"SlotSwap\",\"commitId\":\"6d2284e2ed547d8d6a2e1a88774f2b5fc82734fc\",\"buildId\":\"22988\",\"releaseId\":\"352\",\"buildNumber\":\"22988\",\"releaseName\":\"v-20-22988-1107-2100\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"sourceSlot\":\"prerelease\",\"targetSlot\":\"production\"}",
+        "start_time": "2020-11-15T02:13:41.0109599Z",
+        "end_time": "2020-11-15T02:13:41.0109599Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/3541605171614536",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"Deployment\",\"commitId\":\"304053da8b08104e9f58357a8f13f93121df43ea\",\"buildId\":\"23025\",\"releaseId\":\"354\",\"buildNumber\":\"23025\",\"releaseName\":\"v-20-23025-1111-1525\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"buildProjectUrl\":\"https://simplement-e.visualstudio.com/0470e85e-6a1b-499b-8376-398a0799d388\",\"repositoryUrl\":\"\",\"branch\":\"release\",\"teamProjectName\":\"Equihira\",\"slotName\":\"prerelease\"}",
+        "start_time": "2020-11-12T09:00:15.6705353Z",
+        "end_time": "2020-11-12T09:00:15.6705353Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/3561605495852473",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "[[[simplement-e]\\Project Collection Service Accounts",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"Deployment\",\"commitId\":\"11c73ced6e2711df22e08538eb6df51798f0c90e\",\"buildId\":\"23037\",\"releaseId\":\"356\",\"buildNumber\":\"23037\",\"releaseName\":\"v-20-23037-1114-2100\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"buildProjectUrl\":\"https://simplement-e.visualstudio.com/0470e85e-6a1b-499b-8376-398a0799d388\",\"repositoryUrl\":\"\",\"branch\":\"release\",\"teamProjectName\":\"Equihira\",\"slotName\":\"prerelease\"}",
+        "start_time": "2020-11-16T03:04:14.832817Z",
+        "end_time": "2020-11-16T03:04:14.832817Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/3591606100599963",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"Deployment\",\"commitId\":\"7249395a9bfe313d4532e3a875560e4e3d10d8dc\",\"buildId\":\"23097\",\"releaseId\":\"359\",\"buildNumber\":\"23097\",\"releaseName\":\"v-20-23097-1118-1647\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"buildProjectUrl\":\"https://simplement-e.visualstudio.com/0470e85e-6a1b-499b-8376-398a0799d388\",\"repositoryUrl\":\"\",\"branch\":\"release\",\"teamProjectName\":\"Equihira\",\"slotName\":\"prerelease\"}",
+        "start_time": "2020-11-23T03:03:21.3681124Z",
+        "end_time": "2020-11-23T03:03:21.3681124Z",
+        "active": true
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/3591606615599453",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"SlotSwap\",\"commitId\":\"7249395a9bfe313d4532e3a875560e4e3d10d8dc\",\"buildId\":\"23097\",\"releaseId\":\"359\",\"buildNumber\":\"23097\",\"releaseName\":\"v-20-23097-1118-1647\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"sourceSlot\":\"prerelease\",\"targetSlot\":\"production\"}",
+        "start_time": "2020-11-29T02:08:36.2275513Z",
+        "end_time": "2020-11-29T02:08:36.2275513Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/app.simplement-e.com",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "siteName": "app-simplement-e",
+        "hostNameType": "Verified",
+        "sslState": "SniEnabled",
+        "thumbprint": "624425F1D922CD60F03FC70EEB920F8DEBAE3CFB"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/app-simplement-e.azurewebsites.net",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "siteName": "app-simplement-e",
+        "hostNameType": "Verified"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/cataleeze-ce.improveeze.com",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "siteName": "app-simplement-e",
+        "hostNameType": "Verified",
+        "sslState": "SniEnabled",
+        "thumbprint": "624425F1D922CD60F03FC70EEB920F8DEBAE3CFB"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/office.altazion.com",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "siteName": "app-simplement-e",
+        "hostNameType": "Verified",
+        "sslState": "SniEnabled",
+        "thumbprint": "624425F1D922CD60F03FC70EEB920F8DEBAE3CFB"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/services.simplement-e.com",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "siteName": "app-simplement-e",
+        "hostNameType": "Verified",
+        "sslState": "SniEnabled",
+        "thumbprint": "624425F1D922CD60F03FC70EEB920F8DEBAE3CFB"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/siteextensions",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/letsencrypt",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/slots",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "kind": "app",
+      "properties": {
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "app-simplement-e-prerelease.azurewebsites.net",
+            "sslState": "Disabled",
+            "hostType": "Standard"
+          },
+          {
+            "name": "app-simplement-e-prerelease.scm.azurewebsites.net",
+            "sslState": "Disabled",
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "/subscriptions/f033c3c5-09e9-49c8-97d6-f60a79b20c1d/resourceGroups/simplement-e-prod/providers/Microsoft.Web/serverfarms/simplement-e-prod",
+        "reserved": false,
+        "isXenon": false,
+        "hyperV": false,
+        "siteConfig": {},
+        "scmSiteAlsoStopped": false,
+        "clientAffinityEnabled": true,
+        "clientCertEnabled": false,
+        "hostNamesDisabled": false,
+        "containerSize": 0,
+        "dailyMemoryTimeQuota": 0,
+        "httpsOnly": false,
+        "redundancyMode": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/config",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/web",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "numberOfWorkers": 1,
+        "defaultDocuments": [
+          "Default.htm",
+          "Default.html",
+          "Default.asp",
+          "index.htm",
+          "index.html",
+          "iisstart.htm",
+          "default.aspx",
+          "index.php",
+          "hostingstart.html"
+        ],
+        "netFrameworkVersion": "v4.0",
+        "requestTracingEnabled": true,
+        "requestTracingExpirationTime": "9999-12-31T23:59:00Z",
+        "remoteDebuggingEnabled": false,
+        "httpLoggingEnabled": true,
+        "logsDirectorySizeLimit": 35,
+        "detailedErrorLoggingEnabled": true,
+        "publishingUsername": "$app-simplement-e__prerelease",
+        "azureStorageAccounts": {},
+        "scmType": "VSTSRM",
+        "use32BitWorkerProcess": true,
+        "webSocketsEnabled": true,
+        "alwaysOn": true,
+        "managedPipelineMode": "Integrated",
+        "virtualApplications": [
+          {
+            "virtualPath": "/",
+            "physicalPath": "site\\wwwroot",
+            "preloadEnabled": true
+          }
+        ],
+        "loadBalancing": "LeastRequests",
+        "experiments": {
+          "rampUpRules": []
+        },
+        "autoHealEnabled": false,
+        "autoHealRules": {},
+        "localMySqlEnabled": false,
+        "ipSecurityRestrictions": [
+          {
+            "ipAddress": "Any",
+            "action": "Allow",
+            "priority": 1,
+            "name": "Allow all",
+            "description": "Allow all access"
+          }
+        ],
+        "scmIpSecurityRestrictions": [
+          {
+            "ipAddress": "Any",
+            "action": "Allow",
+            "priority": 1,
+            "name": "Allow all",
+            "description": "Allow all access"
+          }
+        ],
+        "scmIpSecurityRestrictionsUseMain": false,
+        "http20Enabled": true,
+        "minTlsVersion": "1.0",
+        "ftpsState": "AllAllowed",
+        "reservedInstanceCount": 0
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/3381602428842112",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"SlotSwap\",\"commitId\":\"ff3b17d7dc8c8b4944355ea94f9de5cb790e3306\",\"buildId\":\"22803\",\"releaseId\":\"338\",\"buildNumber\":\"22803\",\"releaseName\":\"v-20-22803-1011-1649\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"sourceSlot\":\"prerelease\",\"targetSlot\":\"production\"}",
+        "start_time": "2020-10-11T15:07:52.9053948Z",
+        "end_time": "2020-10-11T15:07:52.9053948Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/3421603072988611",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"Deployment\",\"commitId\":\"b724bc3350cb6eefbeda5225d42e8cf29a208971\",\"buildId\":\"22856\",\"releaseId\":\"342\",\"buildNumber\":\"22856\",\"releaseName\":\"v-20-22856-1015-1554\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"buildProjectUrl\":\"https://simplement-e.visualstudio.com/0470e85e-6a1b-499b-8376-398a0799d388\",\"repositoryUrl\":\"\",\"branch\":\"release\",\"teamProjectName\":\"Equihira\",\"slotName\":\"prerelease\"}",
+        "start_time": "2020-10-19T02:03:09.9709319Z",
+        "end_time": "2020-10-19T02:03:09.9709319Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/3421603591668277",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"SlotSwap\",\"commitId\":\"b724bc3350cb6eefbeda5225d42e8cf29a208971\",\"buildId\":\"22856\",\"releaseId\":\"342\",\"buildNumber\":\"22856\",\"releaseName\":\"v-20-22856-1015-1554\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"sourceSlot\":\"prerelease\",\"targetSlot\":\"production\"}",
+        "start_time": "2020-10-25T02:08:01.1537445Z",
+        "end_time": "2020-10-25T02:08:01.1537445Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/3461604196490759",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"SlotSwap\",\"commitId\":\"c1eb81ce22467bfb7576e84ba8b4d4aa44f63083\",\"buildId\":\"22919\",\"releaseId\":\"346\",\"buildNumber\":\"22919\",\"releaseName\":\"v-20-22919-1024-2100\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"sourceSlot\":\"prerelease\",\"targetSlot\":\"production\"}",
+        "start_time": "2020-11-01T02:10:10.0757606Z",
+        "end_time": "2020-11-01T02:10:10.0757606Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/3491604286436670",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "[[[simplement-e]\\Project Collection Service Accounts",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"Deployment\",\"commitId\":\"7dd02cc66474ff2a2244dced56ac863c45d2027e\",\"buildId\":\"22969\",\"releaseId\":\"349\",\"buildNumber\":\"22969\",\"releaseName\":\"v-20-22969-1031-2100\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"buildProjectUrl\":\"https://simplement-e.visualstudio.com/0470e85e-6a1b-499b-8376-398a0799d388\",\"repositoryUrl\":\"\",\"branch\":\"release\",\"teamProjectName\":\"Equihira\",\"slotName\":\"prerelease\"}",
+        "start_time": "2020-11-02T03:07:17.5954927Z",
+        "end_time": "2020-11-02T03:07:17.5954927Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/3491604801262903",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"SlotSwap\",\"commitId\":\"7dd02cc66474ff2a2244dced56ac863c45d2027e\",\"buildId\":\"22969\",\"releaseId\":\"349\",\"buildNumber\":\"22969\",\"releaseName\":\"v-20-22969-1031-2100\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"sourceSlot\":\"prerelease\",\"targetSlot\":\"production\"}",
+        "start_time": "2020-11-08T02:07:49.4925172Z",
+        "end_time": "2020-11-08T02:07:49.4925172Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/3541605407883360",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"SlotSwap\",\"commitId\":\"304053da8b08104e9f58357a8f13f93121df43ea\",\"buildId\":\"23025\",\"releaseId\":\"354\",\"buildNumber\":\"23025\",\"releaseName\":\"v-20-23025-1111-1525\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"sourceSlot\":\"prerelease\",\"targetSlot\":\"production\"}",
+        "start_time": "2020-11-15T02:38:09.8636163Z",
+        "end_time": "2020-11-15T02:38:09.8636163Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/3591606615599453",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"SlotSwap\",\"commitId\":\"7249395a9bfe313d4532e3a875560e4e3d10d8dc\",\"buildId\":\"23097\",\"releaseId\":\"359\",\"buildNumber\":\"23097\",\"releaseName\":\"v-20-23097-1118-1647\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"sourceSlot\":\"prerelease\",\"targetSlot\":\"production\"}",
+        "start_time": "2020-11-29T02:08:28.917028Z",
+        "end_time": "2020-11-29T02:08:28.917028Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/3611606705428839",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"Deployment\",\"commitId\":\"bf6477e510ced0cd9f3b20c7bedacb46469d834c\",\"buildId\":\"23135\",\"releaseId\":\"361\",\"buildNumber\":\"23135\",\"releaseName\":\"v-20-23135-1126-1324\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"buildProjectUrl\":\"https://simplement-e.visualstudio.com/0470e85e-6a1b-499b-8376-398a0799d388\",\"repositoryUrl\":\"\",\"branch\":\"release\",\"teamProjectName\":\"Equihira\",\"slotName\":\"prerelease\"}",
+        "start_time": "2020-11-30T03:03:49.577173Z",
+        "end_time": "2020-11-30T03:03:49.577173Z",
+        "active": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/deployments",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/3661607915043579",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "status": 4,
+        "author": "Michael CARBENAY",
+        "deployer": "VSTS",
+        "message": "{\"type\":\"Deployment\",\"commitId\":\"93619f54a5419d5011196d992dcd00b29e0aa129\",\"buildId\":\"23237\",\"releaseId\":\"366\",\"buildNumber\":\"23237\",\"releaseName\":\"v-20-23237-1208-1418\",\"repoProvider\":\"TfsGit\",\"repoName\":\"Equihira\",\"collectionUrl\":\"https://simplement-e.visualstudio.com/\",\"teamProject\":\"0470e85e-6a1b-499b-8376-398a0799d388\",\"buildProjectUrl\":\"https://simplement-e.visualstudio.com/0470e85e-6a1b-499b-8376-398a0799d388\",\"repositoryUrl\":\"\",\"branch\":\"release\",\"teamProjectName\":\"Equihira\",\"slotName\":\"prerelease\"}",
+        "start_time": "2020-12-14T03:04:04.9984851Z",
+        "end_time": "2020-12-14T03:04:04.9984851Z",
+        "active": true
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/hostNameBindings",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/app-simplement-e-prerelease.azurewebsites.net",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ],
+      "properties": {
+        "siteName": "app-simplement-e(prerelease)",
+        "hostNameType": "Verified"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/siteextensions",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/letsencrypt",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/siteextensions",
+      "apiVersion": "2018-11-01",
+      "name": "app-simplement-e/prerelease/Microsoft.ApplicationInsights.AzureWebSites",
+      "location": "West Europe",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', 'app-simplement-e', 'prerelease')]",
+        "[resourceId('Microsoft.Web/sites', 'app-simplement-e')]"
+      ]
+    }
+  ]
+}

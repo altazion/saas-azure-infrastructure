@@ -1,0 +1,265 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+
+    "altazion-customer-name": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "sqlAdminLogin": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sqlAdminLoginPassword": {
+      "type": "securestring"
+    },
+    "egestcomRequestedServiceObjectiveName": {
+      "type": "string",
+      "defaultValue": "S1",
+      "allowedValues": [
+        "S0",
+        "S1",
+        "S2"
+      ],
+      "metadata": {
+        "description": "Describes the performance level for Edition"
+      }
+    }
+  },
+  "resources": [
+    {
+      "name": "front-office-farm",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "sku": {
+        "name": "S1"
+      },
+      "dependsOn": [],
+      "tags": {
+        "displayName": "FrontOffice"
+      },
+      "properties": {
+        "name": "front-office-farm",
+        "numberOfWorkers": 1
+      }
+    },
+    {
+      "name": "[concat('az-commerce-', parameters('altazion-customer-name'))]",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', 'front-office-farm')]"
+      ],
+      "tags": {
+        "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', 'front-office-farm'))]": "Resource"
+      },
+      "properties": {
+        "name": "[concat('az-commerce-', parameters('altazion-customer-name'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'front-office-farm')]"
+      },
+      "resources": [
+        {
+          "name": "appsettings",
+          "type": "config",
+          "apiVersion": "2018-11-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', concat('az-commerce-', parameters('altazion-customer-name')))]"
+          ],
+          "tags": {
+            "displayName": "config-commerce"
+          },
+          "properties": {
+            "key1": {
+              "value": "test"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "type": "Microsoft.Cache/Redis",
+      "apiVersion": "2015-08-01",
+      "name": "[concat('redis-az-', parameters('altazion-customer-name'))]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "redis"
+      },
+      "properties": {
+        "sku": {
+          "name": "Standard",
+          "family": "C",
+          "capacity": 0
+        },
+        "enableNonSslPort": false,
+        "redisConfiguration": {
+          "maxclients": "256",
+          "maxmemory-reserved": "2",
+          "maxmemory-delta": "2"
+        }
+      }
+    },
+    {
+      "name": "[concat('sql-az-', parameters('altazion-customer-name'))]",
+      "type": "Microsoft.Sql/servers",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2014-04-01",
+      "dependsOn": [],
+      "tags": {
+        "displayName": "sql"
+      },
+      "properties": {
+        "administratorLogin": "[parameters('sqlAdminLogin')]",
+        "administratorLoginPassword": "[parameters('sqlAdminLoginPassword')]"
+      },
+      "resources": [
+        {
+          "name": "AllowAllWindowsAzureIps",
+          "type": "firewallrules",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2014-04-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', concat('sql-az-', parameters('altazion-customer-name')))]"
+          ],
+          "properties": {
+            "startIpAddress": "0.0.0.0",
+            "endIpAddress": "0.0.0.0"
+          }
+        },
+        {
+          "name": "egestcom",
+          "type": "databases",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2014-04-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', concat('sql-az-', parameters('altazion-customer-name')))]"
+          ],
+          "tags": {
+            "displayName": "egestcom"
+          },
+          "properties": {
+            "collation": "SQL_Latin1_General_CP1_CI_AS",
+            "edition": "Standard",
+            "maxSizeBytes": "1073741824",
+            "requestedServiceObjectiveName": "[parameters('egestcomRequestedServiceObjectiveName')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "back-office-farm",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "sku": {
+        "name": "S1"
+      },
+      "dependsOn": [],
+      "tags": {
+        "displayName": "BackOffice"
+      },
+      "properties": {
+        "name": "back-office-farm",
+        "numberOfWorkers": 1
+      }
+    },
+    {
+      "name": "[concat('az-office-', parameters('altazion-customer-name'))]",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', 'back-office-farm')]"
+      ],
+      "tags": {
+        "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', 'back-office-farm'))]": "Resource",
+        "displayName": "az-office"
+      },
+      "properties": {
+        "name": "[concat('az-office-', parameters('altazion-customer-name'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'back-office-farm')]",
+        "httpsOnly": true,
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "DOCKER_REGISTRY_SERVER_URL",
+              "value": "hub.docker.com"
+            },
+            {
+              "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+              "value": "false"
+            }
+          ],
+          "windowsFxVersion": "DOCKER|altazion/office",
+
+          "alwaysOn": "true"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots",
+      "apiVersion": "2018-11-01",
+      "name": "[concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
+      ],
+      "kind": "app",
+      "properties": {
+        "enabled": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'back-office-farm')]",
+        "httpsOnly": true,
+        "redundancyMode": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/config",
+      "apiVersion": "2018-11-01",
+      "name": "[concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease'))]",
+        "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
+      ],
+      "properties": {
+        "use32BitWorkerProcess": false,
+        "alwaysOn": false,
+        "managedPipelineMode": "Integrated",
+        "scmIpSecurityRestrictionsUseMain": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/hostNameBindings",
+      "apiVersion": "2018-11-01",
+      "name": "[concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease/', 'az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease.azurewebsites.net')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/slots', concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease'))]",
+        "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
+      ],
+      "properties": {
+        "siteName": "concat('az-office-', parameters('altazion-customer-name'),'(az-office-', parameters('altazion-customer-name'), '-prerelease)')",
+        "hostNameType": "Verified"
+      }
+    },
+    {
+      "type": "Microsoft.AppConfiguration/configurationStores",
+      "apiVersion": "2019-02-01-preview",
+      "name": "[concat('az-office-', parameters('altazion-customer-name'))]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "free"
+      },
+      "properties": {
+        "encryption": {}
+      }
+    }
+  ],
+  "outputs": {},
+  "variables": {
+  }
+}

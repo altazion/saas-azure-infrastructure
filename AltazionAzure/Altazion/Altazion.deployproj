@@ -29,6 +29,11 @@
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
+    <None Include="temp\deploy-appconfig-store.json" />
+    <None Include="temp\deploy-office-docker.json" />
+    <None Include="temp\fullversion.json" />
+    <None Include="temp\slot.json" />
+    <None Include="temp\temp.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
