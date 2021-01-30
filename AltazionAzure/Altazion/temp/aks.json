@@ -1,0 +1,291 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Nom de la ressource Cluster managé."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Emplacement de la ressource AKS."
+      }
+    },
+    "dnsPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Préfixe DNS facultatif à utiliser avec le FQDN du serveur d'API Kubernetes hébergé."
+      }
+    },
+    "osDiskSizeGB": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Taille de disque (en Gio) à provisionner pour chacun des nœuds du pool d'agents. Cette valeur est comprise entre 0 et 1 023. La valeur 0 applique la taille de disque par défaut pour cet agentVMSize."
+      },
+      "minValue": 0,
+      "maxValue": 1023
+    },
+    "kubernetesVersion": {
+      "type": "string",
+      "defaultValue": "1.7.7",
+      "metadata": {
+        "description": "Version de Kubernetes."
+      }
+    },
+    "networkPlugin": {
+      "type": "string",
+      "allowedValues": [
+        "azure",
+        "kubenet"
+      ],
+      "metadata": {
+        "description": "Plug-in réseau utilisé pour la création du réseau Kubernetes."
+      }
+    },
+    "enableRBAC": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Indicateur booléen à activer/désactiver pour RBAC."
+      }
+    },
+    "vmssNodePool": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Indicateur booléen à activer/désactiver pour les groupes de machines virtuelles identiques"
+      }
+    },
+    "windowsProfile": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Indicateur booléen à activer/désactiver pour les groupes de machines virtuelles identiques"
+      }
+    },
+    "enablePrivateCluster": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Activez l'accès réseau privé au cluster Kubernetes."
+      }
+    },
+    "enableHttpApplicationRouting": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Indicateur booléen à activer/désactiver pour le routage des applications HTTP."
+      }
+    },
+    "enableAzurePolicy": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Indicateur booléen à activer/désactiver pour le composant additionnel Azure Policy."
+      }
+    },
+    "enableOmsAgent": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Indicateur booléen à activer/désactiver pour le composant additionnel omsagent."
+      }
+    },
+    "workspaceRegion": {
+      "type": "string",
+      "defaultValue": "East US",
+      "metadata": {
+        "description": "Spécifiez la région de votre espace de travail OMS."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Spécifiez le nom de l'espace de travail OMS."
+      }
+    },
+    "omsWorkspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Spécifiez l'ID de ressource de l'espace de travail OMS."
+      }
+    },
+    "omsSku": {
+      "type": "string",
+      "defaultValue": "standalone",
+      "allowedValues": [
+        "free",
+        "standalone",
+        "pernode"
+      ],
+      "metadata": {
+        "description": "Sélectionnez la référence SKU de votre espace de travail."
+      }
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2020-09-01",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'WorkspaceDeployment-20210130090452')]"
+      ],
+      "type": "Microsoft.ContainerService/managedClusters",
+      "location": "[parameters('location')]",
+      "name": "[parameters('resourceName')]",
+      "properties": {
+        "kubernetesVersion": "[parameters('kubernetesVersion')]",
+        "enableRBAC": "[parameters('enableRBAC')]",
+        "dnsPrefix": "[parameters('dnsPrefix')]",
+        "agentPoolProfiles": [
+          {
+            "name": "agentpool",
+            "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
+            "count": 3,
+            "vmSize": "Standard_B2s",
+            "osType": "Linux",
+            "storageProfile": "ManagedDisks",
+            "type": "VirtualMachineScaleSets",
+            "mode": "System",
+            "maxPods": 110,
+            "availabilityZones": [
+              "1",
+              "2",
+              "3"
+            ]
+          }
+        ],
+        "networkProfile": {
+          "loadBalancerSku": "standard",
+          "networkPlugin": "[parameters('networkPlugin')]"
+        },
+        "apiServerAccessProfile": {
+          "enablePrivateCluster": "[parameters('enablePrivateCluster')]"
+        },
+        "addonProfiles": {
+          "httpApplicationRouting": {
+            "enabled": "[parameters('enableHttpApplicationRouting')]"
+          },
+          "azurePolicy": {
+            "enabled": "[parameters('enableAzurePolicy')]"
+          },
+          "omsAgent": {
+            "enabled": "[parameters('enableOmsAgent')]",
+            "config": {
+              "logAnalyticsWorkspaceResourceID": "[parameters('omsWorkspaceId')]"
+            }
+          }
+        }
+      },
+      "tags": {},
+      "identity": {
+        "type": "SystemAssigned"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "SolutionDeployment-20210130090452",
+      "apiVersion": "2017-05-10",
+      "resourceGroup": "[split(parameters('omsWorkspaceId'),'/')[4]]",
+      "subscriptionId": "[split(parameters('omsWorkspaceId'),'/')[2]]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "apiVersion": "2015-11-01-preview",
+              "type": "Microsoft.OperationsManagement/solutions",
+              "location": "[parameters('workspaceRegion')]",
+              "name": "[concat('ContainerInsights', '(', split(parameters('omsWorkspaceId'),'/')[8], ')')]",
+              "properties": {
+                "workspaceResourceId": "[parameters('omsWorkspaceId')]"
+              },
+              "plan": {
+                "name": "[concat('ContainerInsights', '(', split(parameters('omsWorkspaceId'),'/')[8], ')')]",
+                "product": "[concat('OMSGallery/', 'ContainerInsights')]",
+                "promotionCode": "",
+                "publisher": "Microsoft"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'WorkspaceDeployment-20210130090452')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "WorkspaceDeployment-20210130090452",
+      "apiVersion": "2017-05-10",
+      "resourceGroup": "[split(parameters('omsWorkspaceId'),'/')[4]]",
+      "subscriptionId": "[split(parameters('omsWorkspaceId'),'/')[2]]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "apiVersion": "2015-11-01-preview",
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "location": "[parameters('workspaceRegion')]",
+              "name": "[parameters('workspaceName')]",
+              "properties": {
+                "sku": {
+                  "name": "[parameters('omsSku')]"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "ClusterMonitoringMetricPulisherRoleAssignmentDepl-20210130090452",
+      "apiVersion": "2017-05-10",
+      "resourceGroup": "DefaultResourceGroup-WEU",
+      "subscriptionId": "f247134d-ee79-4b82-8e40-5b6cd81275dc",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.ContainerService/managedClusters/providers/roleAssignments",
+              "apiVersion": "2018-01-01-preview",
+              "name": "pouet-le-test/Microsoft.Authorization/e4535145-353a-482a-8970-7e6662cc7549",
+              "properties": {
+                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                "principalId": "[reference(parameters('resourceName')).addonProfiles.omsAgent.identity.objectId]",
+                "scope": "/subscriptions/f247134d-ee79-4b82-8e40-5b6cd81275dc/resourceGroups/DefaultResourceGroup-WEU/providers/Microsoft.ContainerService/managedClusters/pouet-le-test"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "/subscriptions/f247134d-ee79-4b82-8e40-5b6cd81275dc/resourceGroups/DefaultResourceGroup-WEU/providers/Microsoft.ContainerService/managedClusters/pouet-le-test"
+      ]
+    }
+  ],
+  "outputs": {
+    "controlPlaneFQDN": {
+      "type": "string",
+      "value": "[reference(concat('Microsoft.ContainerService/managedClusters/', parameters('resourceName'))).fqdn]"
+    }
+  }
+}
