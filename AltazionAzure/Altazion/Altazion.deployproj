@@ -34,6 +34,7 @@
     <None Include="temp\fullversion.json" />
     <None Include="temp\slot.json" />
     <None Include="temp\temp.json" />
+    <None Include="temp\aks.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
