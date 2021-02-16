@@ -26,6 +26,10 @@
       "metadata": {
         "description": "Describes the performance level for Edition"
       }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "defaultValue": "https://datasimplemente.blob.core.windows.net/releases/"
     }
   },
   "resources": [
@@ -80,7 +84,6 @@
         }
       ]
     },
-
     {
       "type": "Microsoft.Cache/Redis",
       "apiVersion": "2015-08-01",
@@ -198,58 +201,80 @@
 
           "alwaysOn": "true"
         }
-      }
-    },
-    {
-      "type": "Microsoft.Web/sites/slots",
-      "apiVersion": "2018-11-01",
-      "name": "[concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
-      ],
-      "kind": "app",
-      "properties": {
-        "enabled": true,
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'back-office-farm')]",
-        "httpsOnly": true,
-        "redundancyMode": "None"
-      }
-    },
-    {
-      "type": "Microsoft.Web/sites/slots/config",
-      "apiVersion": "2018-11-01",
-      "name": "[concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites/slots', concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease'))]",
-        "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
-      ],
-      "properties": {
-        "use32BitWorkerProcess": false,
-        "alwaysOn": false,
-        "managedPipelineMode": "Integrated",
-        "scmIpSecurityRestrictionsUseMain": false
-      }
-    },
-    {
-      "type": "Microsoft.Web/sites/slots/hostNameBindings",
-      "apiVersion": "2018-11-01",
-      "name": "[concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease/', 'az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease.azurewebsites.net')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites/slots', concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease'))]",
-        "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
-      ],
-      "properties": {
-        "siteName": "concat('az-office-', parameters('altazion-customer-name'),'(az-office-', parameters('altazion-customer-name'), '-prerelease)')",
-        "hostNameType": "Verified"
-      }
+      },
+      "resources": [
+        {
+          "type": "Microsoft.Web/sites/slots",
+          "apiVersion": "2018-11-01",
+          "name": "[concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease')]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
+          ],
+          "kind": "app",
+          "properties": {
+            "enabled": true,
+            "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'back-office-farm')]",
+            "httpsOnly": true,
+            "redundancyMode": "None"
+          }
+        },
+        {
+          "type": "Microsoft.Web/sites/slots/config",
+          "apiVersion": "2018-11-01",
+          "name": "[concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease')]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/slots', concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease'))]",
+            "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
+          ],
+          "properties": {
+            "use32BitWorkerProcess": false,
+            "alwaysOn": false,
+            "managedPipelineMode": "Integrated",
+            "scmIpSecurityRestrictionsUseMain": false
+          }
+        },
+        {
+          "type": "Microsoft.Web/sites/slots/hostNameBindings",
+          "apiVersion": "2018-11-01",
+          "name": "[concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease/', 'az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease.azurewebsites.net')]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/slots', concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease'))]",
+            "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
+          ],
+          "properties": {
+            "siteName": "concat('az-office-', parameters('altazion-customer-name'),'(az-office-', parameters('altazion-customer-name'), '-prerelease)')",
+            "hostNameType": "Verified"
+          }
+        },
+        {
+          "name": "MSDeploy",
+          "type": "extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2018-11-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
+          ],
+          "tags": {
+            "displayName": "az-office-deploy"
+          },
+          "properties": {
+            "packageUri": "[concat(parameters('_artifactsLocation'), 'altazion-office-v-deploy.zip')]",
+            "dbType": "None",
+            "connectionString": "",
+            "setParameters": {
+              "IIS Web Application Name": "[concat('az-office-', parameters('altazion-customer-name'))]"
+            }
+          }
+        }
+      ]
     },
     {
       "type": "Microsoft.AppConfiguration/configurationStores",
       "apiVersion": "2019-02-01-preview",
-      "name": "[concat('az-office-', parameters('altazion-customer-name'))]",
+      "name": "[concat('az-config-', parameters('altazion-customer-name'))]",
       "location": "[resourceGroup().location]",
       "sku": {
         "name": "free"
