@@ -7,7 +7,10 @@
       "type": "string",
       "minLength": 1
     },
-
+    "_artifactsLocation": {
+      "type": "string",
+      "defaultValue": "https://datasimplemente.blob.core.windows.net/releases/"
+    },
     "sqlAdminLogin": {
       "type": "string",
       "minLength": 1
@@ -26,13 +29,33 @@
       "metadata": {
         "description": "Describes the performance level for Edition"
       }
-    },
-    "_artifactsLocation": {
-      "type": "string",
-      "defaultValue": "https://datasimplemente.blob.core.windows.net/releases/"
     }
   },
   "resources": [
+    {
+      "name": "[concat('aztech', parameters('altazion-customer-name'))]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "accessTier": "Hot",
+        "minimumTlsVersion": "TLS1_2",
+        "supportsHttpsTrafficOnly": true,
+        "allowBlobPublicAccess": true,
+        "allowSharedKeyAccess": true,
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "defaultAction": "Allow",
+          "ipRules": []
+        }
+      },
+      "dependsOn": [],
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "tags": {}
+    },
     {
       "name": "front-office-farm",
       "type": "Microsoft.Web/serverfarms",
@@ -134,10 +157,10 @@
           }
         },
         {
-          "name": "egestcom",
+          "name": "[concat('sql-az-', parameters('altazion-customer-name'), '/egestcom')]",
           "type": "databases",
           "location": "[resourceGroup().location]",
-          "apiVersion": "2014-04-01",
+          "apiVersion": "2017-03-01-preview",
           "dependsOn": [
             "[resourceId('Microsoft.Sql/servers', concat('sql-az-', parameters('altazion-customer-name')))]"
           ],
@@ -147,9 +170,30 @@
           "properties": {
             "collation": "SQL_Latin1_General_CP1_CI_AS",
             "edition": "Standard",
-            "maxSizeBytes": "1073741824",
+            "maxSizeBytes": 1073741824,
             "requestedServiceObjectiveName": "[parameters('egestcomRequestedServiceObjectiveName')]"
-          }
+          },
+          "resources": [
+            {
+              "type": "auditingSettings",
+              "apiVersion": "2017-03-01-preview",
+              "name": "[concat(concat('sql-az-', parameters('altazion-customer-name')), '/egestcom/Default')]",
+              "properties": {
+                "retentionDays": 7,
+                "auditActionsAndGroups": [
+                  "SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP",
+                  "FAILED_DATABASE_AUTHENTICATION_GROUP",
+                  "BATCH_COMPLETED_GROUP"
+                ],
+                "isStorageSecondaryKeyInUse": false,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Enabled",
+                "storageEndpoint": "[concat('https://aztech', parameters('altazion-customer-name', '.blob.core.windows.net/'))]",
+                "storageAccountSubscriptionId": "subscription().id"
+              }
+            }
+          ]
+
         }
       ]
     },
@@ -189,18 +233,13 @@
         "siteConfig": {
           "appSettings": [
             {
-              "name": "DOCKER_REGISTRY_SERVER_URL",
-              "value": "hub.docker.com"
-            },
-            {
-              "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
-              "value": "false"
+              "name": "ConfigurationSource",
+              "value": "[concat('az-config-', parameters('altazion-customer-name'))]"
             }
           ],
-          "windowsFxVersion": "DOCKER|altazion/office",
-
           "alwaysOn": "true"
         }
+
       },
       "resources": [
         {
@@ -216,58 +255,44 @@
             "enabled": true,
             "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'back-office-farm')]",
             "httpsOnly": true,
-            "redundancyMode": "None"
-          }
-        },
-        {
-          "type": "Microsoft.Web/sites/slots/config",
-          "apiVersion": "2018-11-01",
-          "name": "[concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease')]",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/slots', concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease'))]",
-            "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
-          ],
-          "properties": {
-            "use32BitWorkerProcess": false,
-            "alwaysOn": false,
-            "managedPipelineMode": "Integrated",
-            "scmIpSecurityRestrictionsUseMain": false
-          }
-        },
-        {
-          "type": "Microsoft.Web/sites/slots/hostNameBindings",
-          "apiVersion": "2018-11-01",
-          "name": "[concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease/', 'az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease.azurewebsites.net')]",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/slots', concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease'))]",
-            "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
-          ],
-          "properties": {
-            "siteName": "concat('az-office-', parameters('altazion-customer-name'),'(az-office-', parameters('altazion-customer-name'), '-prerelease)')",
-            "hostNameType": "Verified"
-          }
-        },
-        {
-          "name": "MSDeploy",
-          "type": "extensions",
-          "location": "[resourceGroup().location]",
-          "apiVersion": "2018-11-01",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', concat('az-office-', parameters('altazion-customer-name')))]"
-          ],
-          "tags": {
-            "displayName": "az-office-deploy"
-          },
-          "properties": {
-            "packageUri": "[concat(parameters('_artifactsLocation'), 'altazion-office-v-deploy.zip')]",
-            "dbType": "None",
-            "connectionString": "",
-            "setParameters": {
-              "IIS Web Application Name": "[concat('az-office-', parameters('altazion-customer-name'))]"
+            "redundancyMode": "None",
+            "siteConfig": {
+              "appSettings": [
+                {
+                  "name": "DOCKER_REGISTRY_SERVER_URL",
+                  "value": "https://index.docker.io"
+                },
+                {
+                  "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+                  "value": ""
+                },
+                {
+                  "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+                  "value": ""
+                },
+                {
+                  "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+                  "value": "false"
+                }
+              ],
+              "windowsFxVersion": "DOCKER|altazion/office:latest",
+              "appCommandLine": "",
+              "alwaysOn": "true"
             }
-          }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Web/sites/slots/hostNameBindings",
+              "apiVersion": "2018-11-01",
+              "name": "[concat('az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease/', 'az-office-', parameters('altazion-customer-name'), '/', 'az-office-', parameters('altazion-customer-name'), '-prerelease.azurewebsites.net')]",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "siteName": "concat('az-office-', parameters('altazion-customer-name'),'(az-office-', parameters('altazion-customer-name'), '-prerelease)')",
+                "hostNameType": "Verified"
+              }
+            }
+          ]
+
         }
       ]
     },

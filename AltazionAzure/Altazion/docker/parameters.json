@@ -1,0 +1,54 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "value": "c7e3bcc8-a39a-486c-a984-b54d95b16a00"
+        },
+        "name": {
+            "value": "back-office-version-docker"
+        },
+        "location": {
+            "value": "North Europe"
+        },
+        "hostingPlanName": {
+            "value": "ASP-Test1-a6f2"
+        },
+        "serverFarmResourceGroup": {
+            "value": "Test1"
+        },
+        "alwaysOn": {
+            "value": true
+        },
+        "sku": {
+            "value": "PremiumV3"
+        },
+        "skuCode": {
+            "value": "P1V3"
+        },
+        "workerSize": {
+            "value": "6"
+        },
+        "workerSizeId": {
+            "value": "6"
+        },
+        "numberOfWorkers": {
+            "value": "1"
+        },
+        "windowsFxVersion": {
+            "value": "DOCKER|altazion/office:latest"
+        },
+        "dockerRegistryUrl": {
+            "value": "https://index.docker.io"
+        },
+        "dockerRegistryUsername": {
+            "value": ""
+        },
+        "dockerRegistryPassword": {
+            "value": null
+        },
+        "dockerRegistryStartupCommand": {
+            "value": ""
+        }
+    }
+}

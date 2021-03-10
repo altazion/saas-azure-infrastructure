@@ -29,6 +29,9 @@
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
+    <None Include="docker\parameters.json" />
+    <None Include="docker\template.json" />
+    <None Include="readme.md" />
     <None Include="temp\deploy-appconfig-store.json" />
     <None Include="temp\deploy-office-docker.json" />
     <None Include="temp\fullversion.json" />
@@ -37,4 +40,9 @@
     <None Include="temp\aks.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties docker_4parameters_1json__JsonSchema="" temp_4fullversion_1json__JsonSchema="" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
